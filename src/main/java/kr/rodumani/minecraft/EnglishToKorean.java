@@ -1,15 +1,20 @@
 package kr.rodumani.minecraft;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class EnglishToKorean {
     // 코드타입 - 초성, 중성, 종성
-    enum CodeType{chosung, jungsung, jongsung}
+    enum CodeType {
+        chosung, jungsung, jongsung
+    }
 
     // 초성
     private String initial = "rRseEfaqQtTdwWczxvg";
     // 중성
-    private String[] mid = {"k","o","i","O","j","p","u","P","h","hk", "ho","hl","y","n","nj","np", "nl", "b", "m", "ml", "l"};
+    private List<String> mid = Arrays.asList("k", "o", "i", "O", "j", "p", "u", "P", "h", "hk", "ho", "hl", "y", "n", "nj", "np", "nl", "b", "m", "ml", "l");
     // 종성
-    private String[] fin = {"r", "R", "rt", "s", "sw", "sg", "e", "f", "fr", "fa", "fq", "ft", "fx", "fv", "fg", "a", "q", "qt", "t", "T", "d", "w", "c", "z", "x", "v", "g"};
+    private List<String> fin = Arrays.asList("r", "R", "rt", "s", "sw", "sg", "e", "f", "fr", "fa", "fq", "ft", "fx", "fv", "fg", "a", "q", "qt", "t", "T", "d", "w", "c", "z", "x", "v", "g");
 
     private boolean isAlpha(String name) {
         return name.matches("[a-zA-Z]+");
@@ -17,7 +22,7 @@ public class EnglishToKorean {
 
     public static void main(String[] args) {
         EnglishToKorean etk = new EnglishToKorean();
-        System.out.println(etk.engToKor("xptmxm?"));
+        System.out.println(etk.engToKor("xptmxm? zzzzzzzzzzzzzkkkkk"));
     }
 
     /**
@@ -28,27 +33,42 @@ public class EnglishToKorean {
         int initialCode = 0, medialCode = 0, finalCode = 0;
         int tempMedialCode, tempFinalCode;
 
-        for(int i = 0; i < eng.length(); i++){
+        for (int i = 0; i < eng.length(); i++) {
 
             // 특수문자를 검사
-            if (!isAlpha(eng.substring(i, i+1))) {
-                sb.append(eng.substring(i, i+1));
+            if (!isAlpha(eng.substring(i, i + 1))) {
+                sb.append(eng.substring(i, i + 1));
                 continue;
             }
 
             // 초성코드 추출
-            initialCode = getCode(CodeType.chosung, eng.substring(i, i+1));
-            i++; // 다음문자로
+            initialCode = getCode(CodeType.chosung, eng.substring(i, i + 1));
+            if (initialCode != -1) {
+                i++; // 다음문자로
+            }
 
 
             // 중성코드 추출
             tempMedialCode = getDoubleMedial(i, eng);   // 두 자로 이루어진 중성코드 추출
             if (tempMedialCode != -1) {
+                if (initialCode == -1) {
+                    sb.append((char) (0x1161 + mid.indexOf(eng.substring(i, i + 2))));
+                    i += 2;
+                    continue;
+                }
                 medialCode = tempMedialCode;
                 i += 2;
-            }
-            else {            // 없다면,
+            } else {            // 없다면,
                 medialCode = getSingleMedial(i, eng);   // 한 자로 이루어진 중성코드 추출
+                if (medialCode == -1) { // 없다면
+                    sb.append((char) (0x1100 + initial.indexOf(eng.substring(i - 1, i))));
+                    i--;
+                    continue;
+                } else if (initialCode == -1) {
+                    sb.append((char) (0x1161 + mid.indexOf(eng.substring(i, i + 1))));
+                    i++;
+                    continue;
+                }
                 i++;
             }
 
@@ -58,20 +78,19 @@ public class EnglishToKorean {
             if (tempFinalCode != -1) {
                 finalCode = tempFinalCode;
                 // 그 다음의 중성 문자에 대한 코드를 추출한다.
-                tempMedialCode = getSingleMedial(i+2, eng);
+                tempMedialCode = getSingleMedial(i + 2, eng);
                 if (tempMedialCode != -1) {      // 코드 값이 있을 경우
                     finalCode = getSingleFinal(i, eng);   // 종성 코드 값을 저장한다.
                 } else {
                     i++;
                 }
-            }
-            else {            // 코드 값이 없을 경우 ,
-                tempMedialCode = getSingleMedial(i+1, eng);  // 그 다음의 중성 문자에 대한 코드 추출.
-                if(tempMedialCode != -1) {      // 그 다음에 중성 문자가 존재할 경우,
+            } else {            // 코드 값이 없을 경우 ,
+                tempMedialCode = getSingleMedial(i + 1, eng);  // 그 다음의 중성 문자에 대한 코드 추출.
+                if (tempMedialCode != -1) {      // 그 다음에 중성 문자가 존재할 경우,
                     finalCode = 0;        // 종성 문자는 없음.
                     i--;
                 } else {
-                    if (i < eng.length() && !isAlpha(eng.substring(i, i+1))) { // 다음글자가 특수문자일 경우 종성문자는 없음
+                    if (i < eng.length() && !isAlpha(eng.substring(i, i + 1))) { // 다음글자가 특수문자일 경우 종성문자는 없음
                         finalCode = 0;
                         i--;
                     }
@@ -82,35 +101,37 @@ public class EnglishToKorean {
             }
 
             // 추출한 초성 문자 코드, 중성 문자 코드, 종성 문자 코드를 합한 후 변환하여 스트링버퍼에 넘김
-            sb.append((char)(0xAC00 + initialCode + medialCode + finalCode));
+            sb.append((char) (0xAC00 + initialCode + medialCode + finalCode));
         }
         return sb.toString();
     }
 
     /**
      * 해당 문자에 따른 코드를 추출한다.
+     *
      * @param type 초성 : chosung, 중성 : jungsung, 종성 : jongsung 구분
      * @param char 해당 문자
      */
-    private int getCode(CodeType type, String c){
-        switch(type){
-            case chosung :
+    private int getCode(CodeType type, String c) {
+        switch (type) {
+            case chosung:
                 int index = initial.indexOf(c);
-                if( index != -1 ){
+                if (index != -1) {
                     return index * 21 * 28;
+                } else {
+                    return -1;
                 }
-                break;
-            case jungsung :
+            case jungsung:
 
-                for(int i = 0; i < mid.length; i++){
-                    if(mid[i].equals(c)){
+                for (int i = 0; i < mid.size(); i++) {
+                    if (mid.get(i).equals(c)) {
                         return i * 28;
                     }
                 }
                 break;
-            case jongsung :
-                for(int i = 0; i < fin.length; i++){
-                    if(fin[i].equals(c)){
+            case jongsung:
+                for (int i = 0; i < fin.size(); i++) {
+                    if (fin.get(i).equals(c)) {
                         return i + 1;
                     }
                 }
@@ -124,25 +145,25 @@ public class EnglishToKorean {
 
     // 한 자로 된 중성값을 리턴한다
     // 인덱스를 벗어낫다면 -1을 리턴
-    private int getSingleMedial(int i, String eng){
-        if((i+1) <= eng.length()){
-            return getCode(CodeType.jungsung, eng.substring(i, i+1));
-        }else{
+    private int getSingleMedial(int i, String eng) {
+        if ((i + 1) <= eng.length()) {
+            return getCode(CodeType.jungsung, eng.substring(i, i + 1));
+        } else {
             return -1;
         }
     }
 
     // 두 자로 된 중성을 체크하고, 있다면 값을 리턴한다.
     // 없으면 리턴값은 -1
-    private int getDoubleMedial(int i, String eng){
+    private int getDoubleMedial(int i, String eng) {
         int result;
-        if((i+2) > eng.length()){
+        if ((i + 2) > eng.length()) {
             return -1;
-        }else{
-            result = getCode(CodeType.jungsung, eng.substring(i, i+2));
-            if(result != -1){
+        } else {
+            result = getCode(CodeType.jungsung, eng.substring(i, i + 2));
+            if (result != -1) {
                 return result;
-            }else{
+            } else {
                 return -1;
             }
         }
@@ -150,21 +171,21 @@ public class EnglishToKorean {
 
     // 한 자로된 종성값을 리턴한다
     // 인덱스를 벗어낫다면 -1을 리턴
-    private int getSingleFinal(int i, String eng){
-        if((i+1) <= eng.length()){
-            return getCode(CodeType.jongsung, eng.substring(i, i+1));
-        }else{
+    private int getSingleFinal(int i, String eng) {
+        if ((i + 1) <= eng.length()) {
+            return getCode(CodeType.jongsung, eng.substring(i, i + 1));
+        } else {
             return -1;
         }
     }
 
     // 두 자로된 종성을 체크하고, 있다면 값을 리턴한다.
     // 없으면 리턴값은 -1
-    private int getDoubleFinal(int i, String eng){
-        if((i+2) > eng.length()){
+    private int getDoubleFinal(int i, String eng) {
+        if ((i + 2) > eng.length()) {
             return -1;
-        }else{
-            return getCode(CodeType.jongsung, eng.substring(i, i+2));
+        } else {
+            return getCode(CodeType.jongsung, eng.substring(i, i + 2));
         }
     }
 }
