@@ -11,20 +11,28 @@ public class EnglishToKorean {
     // 종성
     private String[] fin = {"r", "R", "rt", "s", "sw", "sg", "e", "f", "fr", "fa", "fq", "ft", "fx", "fv", "fg", "a", "q", "qt", "t", "T", "d", "w", "c", "z", "x", "v", "g"};
 
+    private boolean isAlpha(String name) {
+        return name.matches("[a-zA-Z]+");
+    }
+
+    public static void main(String[] args) {
+        EnglishToKorean etk = new EnglishToKorean();
+        System.out.println(etk.engToKor("xptmxm?"));
+    }
 
     /**
      * 영어를 한글로...
      */
-    public String engToKor(String eng){
+    public String engToKor(String eng) {
         StringBuffer sb = new StringBuffer();
         int initialCode = 0, medialCode = 0, finalCode = 0;
         int tempMedialCode, tempFinalCode;
 
         for(int i = 0; i < eng.length(); i++){
 
-            // 공백을 검사
-            if (eng.substring(i, i+1).equals(" ")) {
-                sb.append(" ");
+            // 특수문자를 검사
+            if (!isAlpha(eng.substring(i, i+1))) {
+                sb.append(eng.substring(i, i+1));
                 continue;
             }
 
@@ -63,7 +71,7 @@ public class EnglishToKorean {
                     finalCode = 0;        // 종성 문자는 없음.
                     i--;
                 } else {
-                    if ((i+2) < eng.length() && eng.substring(i, i+1).equals(" ")) { // 다음글자가 공백일 경우 종성문자는 없음
+                    if (i < eng.length() && !isAlpha(eng.substring(i, i+1))) { // 다음글자가 특수문자일 경우 종성문자는 없음
                         finalCode = 0;
                         i--;
                     }
