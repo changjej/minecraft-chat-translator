@@ -4,6 +4,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ChatTranslator extends JavaPlugin {
+
     @Override
     public void onDisable() {
         getLogger().info("onDisable has been invoked!");

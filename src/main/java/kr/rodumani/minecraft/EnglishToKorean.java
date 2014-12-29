@@ -22,7 +22,10 @@ public class EnglishToKorean {
 
     public static void main(String[] args) {
         EnglishToKorean etk = new EnglishToKorean();
-        System.out.println(etk.engToKor("xptmxm? zzzzzzzzzzzzzkkkkk"));
+//        System.out.println(etk.engToKor("xptmxm? zzzzzzzzzzzzzkkkkk"));
+//        System.out.println(etk.engToKor("kkkkkkkkkkkkkk"));
+        System.out.println(etk.engToKor("ahEFHZXnjbkfdxhldfbhxewhfalkjgioaerhgioersgnelkrgherslgkh"));
+//        System.out.println(etk.engToKor("zzzzzz"));
     }
 
     /**
@@ -62,7 +65,9 @@ public class EnglishToKorean {
                 medialCode = getSingleMedial(i, eng);   // 한 자로 이루어진 중성코드 추출
                 if (medialCode == -1) { // 없다면
                     sb.append((char) (0x1100 + initial.indexOf(eng.substring(i - 1, i))));
-                    i--;
+                    if (initialCode != -1) {
+                        i--;
+                    }
                     continue;
                 } else if (initialCode == -1) {
                     sb.append((char) (0x1161 + mid.indexOf(eng.substring(i, i + 1))));
