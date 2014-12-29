@@ -8,7 +8,10 @@ public class UnitTest {
     @Test
     public void testEnglishToKorean() {
         EnglishToKorean etk = new EnglishToKorean();
-        Assert.assertEquals("끄려면끄고 켤려면 켜고, 이미 켦", etk.engToKor("RmfuausRmrh zuffuaus zurh, dlal zufa"));
+        Assert.assertEquals("끄려면끄고 켤려면 켜고, 이미 켦", etk.engToKor("RMfuausRmrh zuffuaus zurh, dlal zuFa"));
+        Assert.assertEquals("ㅓㅓㅓㅓ ㅓㅓㅓㅓ", etk.engToKor("jjjj JjJJ"));
+        Assert.assertEquals("ㄱㄱ ㄱ고", etk.engToKor("rr rrh"));
+        Assert.assertEquals("ㅓㄴㅈ", etk.engToKor("jsw"));
     }
 }
 

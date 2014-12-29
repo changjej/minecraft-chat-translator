@@ -8,24 +8,110 @@ public class EnglishToKorean {
     enum CodeType {
         chosung, jungsung, jongsung
     }
+    
+    public static class EngChar {
+        private List<String> possibleList;
+        
+        public EngChar(List<String> list) {
+            possibleList = list;
+        }
+        
+        public boolean isMyball(String eng) {
+            if (possibleList == null) {
+                return false;
+            }
+            for (String s : possibleList) {
+                if (s.equals(eng)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+    
+    private static final String jauems = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
+    private static final String mouems = "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ";
 
     // 초성
-    private String initial = "rRseEfaqQtTdwWczxvg";
+    private static final List<EngChar> initial = Arrays.asList(
+        new EngChar(Arrays.asList("r")),
+        new EngChar(Arrays.asList("R")),
+        new EngChar(Arrays.asList("s", "S")),
+        new EngChar(Arrays.asList("e")),
+        new EngChar(Arrays.asList("E")),
+        new EngChar(Arrays.asList("f", "F")),
+        new EngChar(Arrays.asList("a", "A")),
+        new EngChar(Arrays.asList("q")),
+        new EngChar(Arrays.asList("Q")),
+        new EngChar(Arrays.asList("t")),
+        new EngChar(Arrays.asList("T")),
+        new EngChar(Arrays.asList("d", "D")),
+        new EngChar(Arrays.asList("w")),
+        new EngChar(Arrays.asList("W")),
+        new EngChar(Arrays.asList("c", "C")),
+        new EngChar(Arrays.asList("z", "Z")),
+        new EngChar(Arrays.asList("x", "X")),
+        new EngChar(Arrays.asList("v", "V")),
+        new EngChar(Arrays.asList("g", "G"))
+    
+    );
     // 중성
-    private List<String> mid = Arrays.asList("k", "o", "i", "O", "j", "p", "u", "P", "h", "hk", "ho", "hl", "y", "n", "nj", "np", "nl", "b", "m", "ml", "l");
+    private static final List<EngChar> mid = Arrays.asList(
+        new EngChar(Arrays.asList("k", "K")),
+        new EngChar(Arrays.asList("o")),
+        new EngChar(Arrays.asList("i", "I")),
+        new EngChar(Arrays.asList("O")),
+        new EngChar(Arrays.asList("j", "J")),
+        new EngChar(Arrays.asList("p")),
+        new EngChar(Arrays.asList("u", "U")),
+        new EngChar(Arrays.asList("P")),
+        new EngChar(Arrays.asList("h", "H")),
+        new EngChar(Arrays.asList("hk", "HK", "hK", "Hk")),
+        new EngChar(Arrays.asList("ho", "Ho")),
+        new EngChar(Arrays.asList("hl", "HL", "Hl", "hL")),
+        new EngChar(Arrays.asList("y", "Y")),
+        new EngChar(Arrays.asList("n", "N")),
+        new EngChar(Arrays.asList("nj", "NJ", "nJ", "Nj")),
+        new EngChar(Arrays.asList("np", "Np")),
+        new EngChar(Arrays.asList("nl", "NL", "Nl", "nL")),
+        new EngChar(Arrays.asList("b", "B")),
+        new EngChar(Arrays.asList("m", "M")),
+        new EngChar(Arrays.asList("ml", "ML", "Ml", "mL")),
+        new EngChar(Arrays.asList("l", "L"))
+    );
     // 종성
-    private List<String> fin = Arrays.asList("r", "R", "rt", "s", "sw", "sg", "e", "f", "fr", "fa", "fq", "ft", "fx", "fv", "fg", "a", "q", "qt", "t", "T", "d", "w", "c", "z", "x", "v", "g");
+    private static final List<EngChar> fin = Arrays.asList(
+        new EngChar(Arrays.asList("r")),
+        new EngChar(Arrays.asList("R")),
+        new EngChar(Arrays.asList("rt")),
+        new EngChar(Arrays.asList("s", "S")),
+        new EngChar(Arrays.asList("sw", "Sw")),
+        new EngChar(Arrays.asList("sg", "SG", "Sg", "sG")),
+        new EngChar(Arrays.asList("e")),
+        new EngChar(Arrays.asList("f", "F")),
+        new EngChar(Arrays.asList("fr", "Fr")),
+        new EngChar(Arrays.asList("fa", "Fa", "FA", "fA")),
+        new EngChar(Arrays.asList("fq", "Fq")),
+        new EngChar(Arrays.asList("ft", "Ft")),
+        new EngChar(Arrays.asList("fx", "Fx", "FX", "fX")),
+        new EngChar(Arrays.asList("fv", "FV", "Fv", "fV")),
+        new EngChar(Arrays.asList("fg", "FG", "Fg", "fG")),
+        new EngChar(Arrays.asList("a", "A")),
+        new EngChar(Arrays.asList("q")),
+        new EngChar(Arrays.asList("qt")),
+        new EngChar(Arrays.asList("t")),
+        new EngChar(Arrays.asList("T")),
+        new EngChar(Arrays.asList("d", "D")),
+        new EngChar(Arrays.asList("w")),
+        new EngChar(Arrays.asList("c", "C")),
+        new EngChar(Arrays.asList("z", "Z")),
+        new EngChar(Arrays.asList("x", "X")),
+        new EngChar(Arrays.asList("v", "V")),
+        new EngChar(Arrays.asList("g", "G"))
+    );
 
     private boolean isAlpha(String name) {
         return name.matches("[a-zA-Z]+");
-    }
-
-    public static void main(String[] args) {
-        EnglishToKorean etk = new EnglishToKorean();
-//        System.out.println(etk.engToKor("xptmxm? zzzzzzzzzzzzzkkkkk"));
-//        System.out.println(etk.engToKor("kkkkkkkkkkkkkk"));
-        System.out.println(etk.engToKor("ahEFHZXnjbkfdxhldfbhxewhfalkjgioaerhgioersgnelkrgherslgkh"));
-//        System.out.println(etk.engToKor("zzzzzz"));
     }
 
     /**
@@ -50,65 +136,89 @@ public class EnglishToKorean {
                 i++; // 다음문자로
             }
 
-
             // 중성코드 추출
             tempMedialCode = getDoubleMedial(i, eng);   // 두 자로 이루어진 중성코드 추출
             if (tempMedialCode != -1) {
-                if (initialCode == -1) {
-                    sb.append((char) (0x1161 + mid.indexOf(eng.substring(i, i + 2))));
-                    i += 2;
-                    continue;
-                }
                 medialCode = tempMedialCode;
                 i += 2;
             } else {            // 없다면,
                 medialCode = getSingleMedial(i, eng);   // 한 자로 이루어진 중성코드 추출
                 if (medialCode == -1) { // 없다면
-                    sb.append((char) (0x1100 + initial.indexOf(eng.substring(i - 1, i))));
-                    if (initialCode != -1) {
-                        i--;
-                    }
-                    continue;
-                } else if (initialCode == -1) {
-                    sb.append((char) (0x1161 + mid.indexOf(eng.substring(i, i + 1))));
+                    i--;
+                } else {
                     i++;
-                    continue;
                 }
-                i++;
             }
 
 
             // 종성코드 추출
-            tempFinalCode = getDoubleFinal(i, eng);    // 두 자로 이루어진 종성코드 추출
-            if (tempFinalCode != -1) {
-                finalCode = tempFinalCode;
-                // 그 다음의 중성 문자에 대한 코드를 추출한다.
-                tempMedialCode = getSingleMedial(i + 2, eng);
-                if (tempMedialCode != -1) {      // 코드 값이 있을 경우
-                    finalCode = getSingleFinal(i, eng);   // 종성 코드 값을 저장한다.
-                } else {
-                    i++;
-                }
-            } else {            // 코드 값이 없을 경우 ,
-                tempMedialCode = getSingleMedial(i + 1, eng);  // 그 다음의 중성 문자에 대한 코드 추출.
-                if (tempMedialCode != -1) {      // 그 다음에 중성 문자가 존재할 경우,
-                    finalCode = 0;        // 종성 문자는 없음.
-                    i--;
-                } else {
-                    if (i < eng.length() && !isAlpha(eng.substring(i, i + 1))) { // 다음글자가 특수문자일 경우 종성문자는 없음
-                        finalCode = 0;
-                        i--;
+            if (initialCode == -1 || medialCode == -1) {
+                //종성코드고 자시고 초성이나 중성이 없으면 소용이 없다.
+                i--;
+                finalCode = -1;
+            } else {
+                tempFinalCode = getDoubleFinal(i, eng);    // 두 자로 이루어진 종성코드 추출
+                if (tempFinalCode != -1) {
+                    finalCode = tempFinalCode;
+                    // 그 다음의 중성 문자에 대한 코드를 추출한다.
+                    tempMedialCode = getSingleMedial(i + 2, eng);
+                    if (tempMedialCode != -1) {      // 코드 값이 있을 경우
+                        finalCode = getSingleFinal(i, eng);   // 종성 코드 값을 저장한다.
+                    } else {
+                        i++;
                     }
-                    finalCode = getSingleFinal(i, eng);   // 종성 문자 추출
-                    if (finalCode == -1)
-                        finalCode = 0;
+                } else {            // 코드 값이 없을 경우 ,
+                    tempMedialCode = getSingleMedial(i + 1, eng);  // 그 다음의 중성 문자에 대한 코드 추출.
+                    if (tempMedialCode != -1) {      // 그 다음에 중성 문자가 존재할 경우,
+                        finalCode = 0;        // 종성 문자는 없음.
+                        i--;
+                    } else {
+                        if (i < eng.length() && !isAlpha(eng.substring(i, i + 1))) { // 다음글자가 특수문자일 경우 종성문자는 없음
+                            finalCode = 0;
+                            i--;
+                        }
+                        finalCode = getSingleFinal(i, eng);   // 종성 문자 추출
+                        if (finalCode == -1)
+                            finalCode = 0;
+                    }
                 }
             }
-
-            // 추출한 초성 문자 코드, 중성 문자 코드, 종성 문자 코드를 합한 후 변환하여 스트링버퍼에 넘김
-            sb.append((char) (0xAC00 + initialCode + medialCode + finalCode));
+            System.out.println(String.format("codes : %d, %d, %d", initialCode, medialCode, finalCode));
+            if (initialCode >= 0 && medialCode >= 0) {
+                // 추출한 초성 문자 코드, 중성 문자 코드, 종성 문자 코드를 합한 후 변환하여 스트링버퍼에 넘김
+                sb.append((char) (0xAC00 + initialCode * 21 * 28 + medialCode * 28 + finalCode + 1));
+            } else if (initialCode >= 0 && medialCode < 0) {
+                //초성만
+                sb.append(jauems.substring(initialCode, initialCode + 1));
+            } else if (initialCode < 0 && medialCode >= 0) {
+                //중성만
+                sb.append(mouems.substring(medialCode, medialCode + 1));
+            } else {
+                //존재하나 이런경우가??
+                sb.append(eng.substring(i, i + 1));
+            }
         }
+        System.out.println(sb.toString());
         return sb.toString();
+    }
+    
+    /**
+     * EngChar리스트에서 String에 해당하는 EngChar의 index를 리턴한다.
+     *
+     * @param list  EngChar리스트
+     * @param c     해당 문자
+     */
+    private int getEngCharIndex(List<EngChar> list, String c) {
+        if (list == null) {
+            return -1;
+        }
+        for (int i = 0; i < list.size(); i++) {
+            EngChar ec = list.get(i);
+            if (ec.isMyball(c)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     /**
@@ -120,27 +230,11 @@ public class EnglishToKorean {
     private int getCode(CodeType type, String c) {
         switch (type) {
             case chosung:
-                int index = initial.indexOf(c);
-                if (index != -1) {
-                    return index * 21 * 28;
-                } else {
-                    return -1;
-                }
+                return getEngCharIndex(initial, c);
             case jungsung:
-
-                for (int i = 0; i < mid.size(); i++) {
-                    if (mid.get(i).equals(c)) {
-                        return i * 28;
-                    }
-                }
-                break;
+                return getEngCharIndex(mid, c);
             case jongsung:
-                for (int i = 0; i < fin.size(); i++) {
-                    if (fin.get(i).equals(c)) {
-                        return i + 1;
-                    }
-                }
-                break;
+                return getEngCharIndex(fin, c);
             default:
                 System.out.println("잘못된 타입 입니다");
         }
