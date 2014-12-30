@@ -132,58 +132,53 @@ public class EnglishToKorean {
 
             // 초성코드 추출
             initialCode = getCode(CodeType.chosung, eng.substring(i, i + 1));
-            if (initialCode != -1) {
+            if (initialCode >= 0) {
                 i++; // 다음문자로
             }
 
             // 중성코드 추출
             tempMedialCode = getDoubleMedial(i, eng);   // 두 자로 이루어진 중성코드 추출
-            if (tempMedialCode != -1) {
+            if (tempMedialCode >= 0) {
                 medialCode = tempMedialCode;
                 i += 2;
             } else {            // 없다면,
                 medialCode = getSingleMedial(i, eng);   // 한 자로 이루어진 중성코드 추출
-                if (medialCode == -1) { // 없다면
-                    i--;
-                } else {
+                if (medialCode >= 0) {
                     i++;
                 }
             }
 
 
             // 종성코드 추출
-            if (initialCode == -1 || medialCode == -1) {
+            if (initialCode < 0 || medialCode < 0) {
                 //종성코드고 자시고 초성이나 중성이 없으면 소용이 없다.
                 i--;
                 finalCode = -1;
             } else {
                 tempFinalCode = getDoubleFinal(i, eng);    // 두 자로 이루어진 종성코드 추출
-                if (tempFinalCode != -1) {
+                if (tempFinalCode >= 0) {
                     finalCode = tempFinalCode;
                     // 그 다음의 중성 문자에 대한 코드를 추출한다.
                     tempMedialCode = getSingleMedial(i + 2, eng);
-                    if (tempMedialCode != -1) {      // 코드 값이 있을 경우
+                    if (tempMedialCode >= 0) {      // 코드 값이 있을 경우
                         finalCode = getSingleFinal(i, eng);   // 종성 코드 값을 저장한다.
                     } else {
                         i++;
                     }
                 } else {            // 코드 값이 없을 경우 ,
                     tempMedialCode = getSingleMedial(i + 1, eng);  // 그 다음의 중성 문자에 대한 코드 추출.
-                    if (tempMedialCode != -1) {      // 그 다음에 중성 문자가 존재할 경우,
-                        finalCode = 0;        // 종성 문자는 없음.
+                    if (tempMedialCode >= 0) {      // 그 다음에 중성 문자가 존재할 경우,
+                        finalCode = -1;        // 종성 문자는 없음.
                         i--;
                     } else {
                         if (i < eng.length() && !isAlpha(eng.substring(i, i + 1))) { // 다음글자가 특수문자일 경우 종성문자는 없음
-                            finalCode = 0;
+                            finalCode = -1;
                             i--;
                         }
                         finalCode = getSingleFinal(i, eng);   // 종성 문자 추출
-                        if (finalCode == -1)
-                            finalCode = 0;
                     }
                 }
             }
-            System.out.println(String.format("codes : %d, %d, %d", initialCode, medialCode, finalCode));
             if (initialCode >= 0 && medialCode >= 0) {
                 // 추출한 초성 문자 코드, 중성 문자 코드, 종성 문자 코드를 합한 후 변환하여 스트링버퍼에 넘김
                 sb.append((char) (0xAC00 + initialCode * 21 * 28 + medialCode * 28 + finalCode + 1));
@@ -198,7 +193,6 @@ public class EnglishToKorean {
                 sb.append(eng.substring(i, i + 1));
             }
         }
-        System.out.println(sb.toString());
         return sb.toString();
     }
     
@@ -259,12 +253,7 @@ public class EnglishToKorean {
         if ((i + 2) > eng.length()) {
             return -1;
         } else {
-            result = getCode(CodeType.jungsung, eng.substring(i, i + 2));
-            if (result != -1) {
-                return result;
-            } else {
-                return -1;
-            }
+            return getCode(CodeType.jungsung, eng.substring(i, i + 2));
         }
     }
 
