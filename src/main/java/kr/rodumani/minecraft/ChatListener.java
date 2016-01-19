@@ -13,12 +13,10 @@ public class ChatListener implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent asyncPlayerChatEvent) {
         String message = asyncPlayerChatEvent.getMessage();
         if (message.startsWith("-")) {
-            message = message + "\n--> " + englishToKorean2.engToKor(message.substring(1));
-            asyncPlayerChatEvent.setMessage(message);
+            asyncPlayerChatEvent.setMessage(englishToKorean2.engToKor(message.substring(1)));
         }
         else if (message.startsWith("=")) {
-            message = message + "\n--> " + englishToKorean3.engToKor(message.substring(1));
-            asyncPlayerChatEvent.setMessage(message);
+            asyncPlayerChatEvent.setMessage(englishToKorean3.engToKor(message.substring(1)));
         }
         else {
             asyncPlayerChatEvent.setMessage(message);
