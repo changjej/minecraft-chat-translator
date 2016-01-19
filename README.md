@@ -17,7 +17,7 @@ Then it'll build jar file inside target directory
 
 How to use
 =======================
-Just download the recent released jar file into user plugins directory and reload.
+Just download [the latest released jar file](https://github.com/rodumani/minecraft-chat-translator/releases/latest) into user plugins directory and reload.
 
 If you want to type two-pairs Korean, add prefix "-" before you type it as Korean.
 In example,
